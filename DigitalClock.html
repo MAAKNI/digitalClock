@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O'clock</title>
+  <style>
+    body {
+    font-family: Arial, Helvetica, sans-serif;
+     min-height: 100vh;
+    background: rgb(0, 0, 0);
+    }
+
+    .container {
+    height: 200px;
+    background: #f1f1f1;
+    margin: 10rem auto;
+    box-shadow: 0 5px 5px 0px rgba(255,255,255,.3)
+    }
+
+    .clock {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: calc(20px + 5vw + 2px);
+    line-height: 200px;
+    text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+
+<div class="container">
+  <div class="clock"></div>
+  <div onclick="setAlarmOptions()">
+    <label>Set Alarm : </label>
+    <select name="alarm" id="alarmHeures">
+    </select>
+    <select name="alarm" id="alarmMinute">
+    </select>
+    <button onclick="addAlarm()">Ajouter</button>
+
+  </div>
+
+<div id="alarmList">
+
+</div>
+
+</div>
+
+
+  <script>
+
+
+    const horloge = document.querySelector('.clock')
+    horloge.addEventListener('onload',time)
+    let alarmArray =[];
+
+    function time(){
+        let date= new Date();
+        let heures = date.getHours();
+        let minutes = date.getMinutes();
+        let secondes =date.getSeconds();
+        if (heures === 0){
+            h=24;
+        }
+        heures = (heures < 10 ) ? "0" + heures : heures ;
+        minutes = (minutes < 10 ) ? "0" + minutes : minutes ;
+        secondes = (secondes < 10 ) ? "0" + secondes : secondes ;
+        
+        let time = `${heures} : ${minutes} : ${secondes}`
+
+        horloge.innerText =time ;
+        Array.from(alarmArray).forEach(alarm => {
+          
+          if(parseInt(alarm.heures) === parseInt(heures) && parseInt(alarm.minutes) === parseInt(minutes)) {
+            alert("biiip");
+          }
+          
+        });
+
+    }
+    
+    setInterval (time,1000) ;
+    let first = true;
+    function setAlarmOptions(){
+      if(first === true)
+      {
+        let options = document.getElementById('alarmHeures');
+        for (let heures=0 ; heures<24 ;heures++ ){
+          options.innerHTML= options.innerHTML + `<option value='${heures}'>${heures}</option>`
+        }
+        let minutes = document.getElementById("alarmMinute")
+       
+        for ( let minute=0; minute<60 ; minute++){
+
+           minutes.innerHTML=   minutes.innerHTML +`<option value='${minute}'>${minute} </option>`
+        }
+        first = false
+      }
+    }
+    let heuresSelect = document.getElementById('alarmHeures');
+    // heuresSelect.onclick = setAlarmOptions;
+
+    function addAlarm(){
+              let valeurHeures = document.getElementById('alarmHeures').value;
+              let valeurMinutes = document.getElementById("alarmMinute").value;
+              let alarm={heures:valeurHeures, minutes:valeurMinutes}
+              alarmArray.push(alarm);
+              console.log(alarmArray)
+              createAlarm();
+
+    }
+
+    function createAlarm(){
+      let test=document.getElementById('alarmList')
+      test.innerHTML=null;
+      Array.from(alarmArray).forEach((alarm,index) => {
+        test.innerHTML= test.innerHTML+`<div id='${index}'> ${alarm.heures} : ${alarm.minutes} <button onclick= "supprimer(${index})">Supprimer</button></div>`
+          
+        });
+    }
+
+    function supprimer(index){
+        alarmArray.splice(index,1);
+        createAlarm();
+    }
+
+
+  </script>
+  
+</body>
+</html>
+
+
+
+
+
